@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<title>Calculateur Business CI — V3.4</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f4f6;color:#111827;padding-bottom:78px}
+header{background:#111827;color:#fff;padding:25px 16px;text-align:center}
+header h1{margin:0 0 7px;font-size:26px}
+header p{margin:0;color:#d1d5db}
+main{width:min(900px,100%);margin:auto;padding:15px 14px 30px}
+.page{display:none}.page.active{display:block}
+.card{background:#fff;border-radius:16px;padding:18px;margin-bottom:15px;box-shadow:0 4px 18px rgba(0,0,0,.07)}
+.hero{background:linear-gradient(135deg,#111827,#1f2937);color:white}
+.hero p{color:#d1d5db}
+h2{margin:0 0 14px;font-size:21px}h3{margin:0 0 8px}
+p{line-height:1.5}
+.field{margin-bottom:13px}label{display:block;font-weight:700;margin-bottom:7px}
+input,select{width:100%;padding:13px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;background:#fff}
+button{width:100%;border:0;border-radius:10px;padding:13px;background:#2563eb;color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+button.secondary{background:#e5e7eb;color:#111827}
+button.dark{background:#111827}
+button.danger{background:#dc2626}
+button.small{padding:9px;font-size:13px}
+.quick,.grid2,.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.quick button{background:#fff;color:#111827}
+.results{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px}
+.result{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:12px}
+.result span{display:block;color:#6b7280;font-size:12px;margin-bottom:5px}.result strong{font-size:16px}
+.message{display:none;margin-top:12px;padding:11px;border-radius:10px;font-weight:700}.message.show{display:block}
+.error{background:#fee2e2;color:#991b1b}.warning{background:#fef3c7;color:#92400e}.success{background:#dcfce7;color:#166534}.info{background:#dbeafe;color:#1e40af}
+.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.idea{border:1px solid #e5e7eb;border-radius:13px;padding:15px;margin-bottom:10px}
+.idea .meta{color:#6b7280;font-size:13px;line-height:1.5;margin:7px 0}
+.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:700;margin-right:5px}
+.favorite{float:right;background:transparent;color:#f59e0b;width:auto;padding:0;font-size:22px}
+.stat{background:#f9fafb;border-radius:12px;padding:13px;text-align:center;border:1px solid #e5e7eb}
+.stat strong{display:block;font-size:20px;margin-top:5px}
+.progress{height:12px;background:#e5e7eb;border-radius:20px;overflow:hidden;margin:10px 0}
+.progress div{height:100%;width:0;background:#2563eb}
+.history-item{border:1px solid #e5e7eb;border-radius:12px;padding:13px;margin-bottom:10px}
+.history-item strong{display:block;margin-bottom:5px}.history-item small{color:#6b7280}
+.empty{text-align:center;color:#6b7280;padding:20px}
+footer{text-align:center;color:#6b7280;font-size:12px;padding:10px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:grid;grid-template-columns:repeat(7,1fr);z-index:20}
+nav button{background:#fff;color:#4b5563;border-radius:0;padding:9px 2px;font-size:8px}
+nav button.active{color:#2563eb;font-weight:800}.icon{display:block;font-size:19px;margin-bottom:2px}
+@media(max-width:600px){.results,.grid2,.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>Calculateur Business CI V3.4</h1>
+<p>Calcule, compare et prépare ton projet.</p>
+</header>
+
+<main>
+<section id="home" class="page active">
+<div class="card hero">
+<h2>💼 Calculateur Business CI</h2>
+<p><strong>Transforme une idée en chiffres avant d'investir ton argent.</strong></p>
+<p>Calcule ton bénéfice, prépare ton plan et garde tes projets au même endroit.</p>
+<div class="quick">
+<button onclick="showPage('plan')">📋 Créer un plan</button>
+<button onclick="showPage('calculator')">🧮 Faire un calcul</button>
+</div>
+</div>
+
+<div class="card">
+<h2>🚀 Que veux-tu faire ?</h2>
+<div class="idea">
+<h3>💡 Trouver une idée</h3>
+<p>Découvre des activités accessibles avec différents niveaux de capital.</p>
+<button class="small dark" onclick="showPage('ideas')">VOIR LES IDÉES</button>
+</div>
+<div class="idea">
+<h3>📋 Préparer mon business</h3>
+<p>Entre ton capital, tes prix et ton objectif pour obtenir un scénario simple.</p>
+<button class="small dark" onclick="showPage('plan')">CRÉER MON PLAN</button>
+</div>
+<div class="idea">
+<h3>📁 Suivre mes projets</h3>
+<p>Enregistre tes simulations et retrouve-les plus tard.</p>
+<button class="small dark" onclick="showPage('projects')">MES PROJETS</button>
+</div>
+</div>
+
+<div class="card">
+<h2>📊 Mon tableau de bord</h2>
+<div class="stats">
+<div class="stat"><span>Objectif / jour</span><strong id="dashDaily">0 FCFA</strong></div>
+<div class="stat"><span>Objectif / mois</span><strong id="dashMonthly">0 FCFA</strong></div>
+</div>
+<div class="progress"><div id="progressBar"></div></div>
+<p id="progressText">Définis ton objectif pour commencer.</p>
+<button onclick="showPage('objectives')">GÉRER MES OBJECTIFS</button>
+</div>
+
+<div class="card">
+<h2>⭐ Mes favoris</h2>
+<div id="homeFavorites" class="empty">Aucun favori pour le moment.</div>
+</div>
+
+<div class="card">
+<h2>ℹ️ À savoir</h2>
+<p>Les résultats sont des <strong>estimations</strong>. Ils ne garantissent pas un bénéfice. Vérifie toujours les prix, la demande, les dépenses et les conditions réelles avant d'investir.</p>
+</div>
+</section>
+
+<section id="calculator" class="page">
+<div class="card">
+<h2>🧮 Calculateur de bénéfice</h2>
+<div class="grid2">
+<div class="field"><label for="capital">Capital disponible</label><input id="capital" type="number" min="0" value="25000"></div>
+<div class="field"><label for="purchase">Prix d'achat / produit</label><input id="purchase" type="number" min="0" value="500"></div>
+<div class="field"><label for="sale">Prix de vente / produit</label><input id="sale" type="number" min="0" value="750"></div>
+<div class="field"><label for="quantity">Produits achetés</label><input id="quantity" type="number" min="1" value="5"></div>
+<div class="field"><label for="salesDay">Ventes / jour</label><input id="salesDay" type="number" min="1" value="5"></div>
+<div class="field"><label for="expenses">Dépenses / jour</label><input id="expenses" type="number" min="0" value="100"></div>
+</div>
+<button onclick="calculate()">CALCULER MON BÉNÉFICE</button>
+<div id="calcMsg" class="message"></div>
+<div id="results" class="results" style="display:none">
+<div class="result"><span>Capital investi</span><strong id="rInvested">0</strong></div>
+<div class="result"><span>CA / jour</span><strong id="rRevenue">0</strong></div>
+<div class="result"><span>Bénéfice / produit</span><strong id="rUnitProfit">0</strong></div>
+<div class="result"><span>Bénéfice / jour</span><strong id="rDaily">0</strong></div>
+<div class="result"><span>Bénéfice / semaine</span><strong id="rWeekly">0</strong></div>
+<div class="result"><span>Bénéfice / mois</span><strong id="rMonthly">0</strong></div>
+<div class="result"><span>Marge</span><strong id="rMargin">0 %</strong></div>
+<div class="result"><span>Récupération</span><strong id="rBreakEven">—</strong></div>
+</div>
+</div>
+</section>
+
+<section id="ideas" class="page">
+<div class="card">
+<h2>💡 Idées de business</h2>
+<p>Des idées simples à comprendre. Choisis une activité, regarde le capital indicatif et lance une simulation.</p>
+<div class="field">
+<label for="ideaSearch">🔎 Rechercher une idée</label>
+<input id="ideaSearch" placeholder="Ex. accessoires, numérique..." oninput="renderIdeas()">
+</div>
+<div id="ideasList"></div>
+</div>
+</section>
+
+
+<section id="plan" class="page">
+<div class="card hero">
+<h2>📋 Mon Plan de Business</h2>
+<p>Transforme ton capital et ton idée en un plan simple à tester.</p>
+</div>
+
+<div class="card">
+<h2>1️⃣ Tes paramètres</h2>
+<div class="grid2">
+<div class="field"><label for="planCapital">Capital disponible</label><input id="planCapital" type="number" min="0" value="25000"></div>
+<div class="field"><label for="planPurchase">Prix d'achat / produit</label><input id="planPurchase" type="number" min="0" value="500"></div>
+<div class="field"><label for="planSale">Prix de vente / produit</label><input id="planSale" type="number" min="0" value="750"></div>
+<div class="field"><label for="planExpenses">Dépenses / jour</label><input id="planExpenses" type="number" min="0" value="100"></div>
+<div class="field"><label for="planTarget">Bénéfice souhaité / mois</label><input id="planTarget" type="number" min="1" value="150000"></div>
+<div class="field"><label for="planDays">Jours de travail / mois</label><input id="planDays" type="number" min="1" value="30"></div>
+</div>
+<button onclick="buildPlan()">GÉNÉRER MON PLAN</button>
+<div id="planMsg" class="message"></div>
+</div>
+
+<div id="planResults" style="display:none">
+<div class="card">
+<h2>2️⃣ Ton plan</h2>
+<div class="results">
+<div class="result"><span>Unités achetables</span><strong id="pUnits">0</strong></div>
+<div class="result"><span>Capital utilisé</span><strong id="pCapitalUsed">0</strong></div>
+<div class="result"><span>Bénéfice / vente</span><strong id="pUnitProfit">0</strong></div>
+<div class="result"><span>Ventes nécessaires / jour</span><strong id="pSalesDay">0</strong></div>
+<div class="result"><span>Ventes nécessaires / mois</span><strong id="pSalesMonth">0</strong></div>
+<div class="result"><span>CA mensuel estimé</span><strong id="pRevenue">0</strong></div>
+</div>
+</div>
+
+<div class="card">
+<h2>3️⃣ Lecture rapide</h2>
+<div id="planText"></div>
+<div class="message info show">⚠️ Ceci est une simulation. Les prix, ventes et dépenses doivent être vérifiés dans la réalité avant d'investir.</div>
+</div>
+
+<div class="card">
+<h2>4️⃣ Tester le scénario</h2>
+<button onclick="sendPlanToCalculator()">🧮 OUVRIR DANS LE CALCULATEUR</button>
+</div>
+</div>
+</section>
+<section id="objectives" class="page">
+<div class="card">
+<h2>🎯 Objectif financier</h2>
+<div class="grid2">
+<div class="field"><label for="monthlyGoal">Bénéfice souhaité / mois</label><input id="monthlyGoal" type="number" min="1" value="150000"></div>
+<div class="field"><label for="goalDays">Jours travaillés / mois</label><input id="goalDays" type="number" min="1" value="30"></div>
+<div class="field"><label for="objPurchase">Prix d'achat / produit</label><input id="objPurchase" type="number" min="0" value="500"></div>
+<div class="field"><label for="objSale">Prix de vente / produit</label><input id="objSale" type="number" min="0" value="750"></div>
+<div class="field"><label for="objExpenses">Dépenses / jour</label><input id="objExpenses" type="number" min="0" value="100"></div>
+</div>
+<button onclick="calculateGoal()">CALCULER MON PLAN</button>
+<div id="goalMsg" class="message"></div>
+<div id="goalResults" class="results" style="display:none">
+<div class="result"><span>Objectif / jour</span><strong id="gDaily">0</strong></div>
+<div class="result"><span>Ventes nécessaires / jour</span><strong id="gSales">0</strong></div>
+<div class="result"><span>Ventes / mois</span><strong id="gMonthSales">0</strong></div>
+<div class="result"><span>Chiffre d'affaires / mois</span><strong id="gRevenue">0</strong></div>
+</div>
+</div>
+</section>
+
+
+<section id="projects" class="page">
+<div class="card hero">
+<h2>📁 Mes projets</h2>
+<p>Enregistre tes simulations pour les retrouver et les modifier plus tard.</p>
+</div>
+
+<div class="card">
+<h2>➕ Nouveau projet</h2>
+<div class="field">
+<label for="projectName">Nom du projet</label>
+<input id="projectName" type="text" maxlength="60" placeholder="Ex. Vente d'accessoires">
+</div>
+<div class="grid2">
+<div class="field"><label for="projectCapital">Capital</label><input id="projectCapital" type="number" min="0" value="25000"></div>
+<div class="field"><label for="projectPurchase">Prix d'achat</label><input id="projectPurchase" type="number" min="0" value="500"></div>
+<div class="field"><label for="projectSale">Prix de vente</label><input id="projectSale" type="number" min="0" value="750"></div>
+<div class="field"><label for="projectQuantity">Quantité</label><input id="projectQuantity" type="number" min="1" value="5"></div>
+<div class="field"><label for="projectSalesDay">Ventes / jour</label><input id="projectSalesDay" type="number" min="1" value="5"></div>
+<div class="field"><label for="projectExpenses">Dépenses / jour</label><input id="projectExpenses" type="number" min="0" value="100"></div>
+</div>
+<button onclick="saveProject()">💾 ENREGISTRER LE PROJET</button>
+<div id="projectMsg" class="message"></div>
+</div>
+
+<div id="projectsList"></div>
+</section>
+<section id="history" class="page">
+<div class="card">
+<h2>📜 Historique</h2>
+<p>Les 30 derniers calculs sont conservés sur ce téléphone.</p>
+<button class="danger" onclick="clearHistory()">EFFACER L'HISTORIQUE</button>
+</div>
+<div id="historyList"></div>
+</section>
+
+
+<div class="card">
+<h2>⭐ Bientôt : Business CI Premium</h2>
+<p>Des outils plus avancés pour analyser tes projets et suivre leur évolution.</p>
+<button class="secondary" onclick="showPage('plan')">CONTINUER AVEC LA VERSION GRATUITE</button>
+</div>
+
+<footer>Calculateur Business CI — estimations uniquement, sans garantie de bénéfice.</footer>
+</main>
+
+<nav>
+<button data-page="home" onclick="showPage('home')"><span class="icon">🏠</span>Accueil</button>
+<button data-page="calculator" onclick="showPage('calculator')"><span class="icon">🧮</span>Calcul</button>
+<button data-page="ideas" onclick="showPage('ideas')"><span class="icon">💡</span>Idées</button>
+<button data-page="plan" onclick="showPage('plan')"><span class="icon">📋</span>Plan</button>
+<button data-page="projects" onclick="showPage('projects')"><span class="icon">📁</span>Projets</button>
+<button data-page="objectives" onclick="showPage('objectives')"><span class="icon">🎯</span>Objectifs</button>
+<button data-page="history" onclick="showPage('history')"><span class="icon">📜</span>Historique</button>
+</nav>
+
+<script>
+const ideas=[
+{id:1,name:"Revente de petits accessoires",capital:10000,level:"Débutant",desc:"Tester de petits stocks d'accessoires utiles et les revendre autour de soi ou en ligne."},
+{id:2,name:"Services numériques",capital:5000,level:"Débutant",desc:"Créer des affiches, CV, visuels, saisie ou autres services si tu maîtrises les outils numériques."},
+{id:3,name:"Revente de produits alimentaires",capital:10000,level:"Débutant",desc:"Tester un produit de consommation courante avec une petite quantité avant d'augmenter le stock."},
+{id:4,name:"Collecte de matières recyclables",capital:10000,level:"Intermédiaire",desc:"Collecter, trier puis rechercher des acheteurs professionnels pour certaines matières recyclables."},
+{id:5,name:"Mise en relation commerciale",capital:5000,level:"Intermédiaire",desc:"Trouver des clients pour des prestataires ou vendeurs et négocier une commission clairement définie."},
+{id:6,name:"Création de sites simples",capital:10000,level:"Intermédiaire",desc:"Créer de petits sites vitrines ou pages de présentation pour des commerces et indépendants."},
+{id:7,name:"Vente de produits via réseaux sociaux",capital:25000,level:"Débutant",desc:"Présenter des produits en ligne, prendre des commandes et organiser la livraison ou le retrait."},
+{id:8,name:"Petits services de proximité",capital:10000,level:"Débutant",desc:"Identifier un service utile dans ton quartier et le vendre sans commencer avec une grosse structure."},
+{id:9,name:"Personnalisation de visuels",capital:25000,level:"Intermédiaire",desc:"Proposer des visuels personnalisés pour anniversaires, événements, commerces ou réseaux sociaux."},
+{id:10,name:"Vente de produits d'entretien",capital:25000,level:"Débutant",desc:"Tester la revente de produits d'entretien courants avec un petit stock et une clientèle locale."}
+];
+
+function formatFCFA(v){return Math.round(v).toLocaleString('fr-FR')+' FCFA'}
+function msg(id,text,type){const e=document.getElementById(id);e.textContent=text;e.className='message show '+type}
+function showPage(id){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+window.scrollTo({top:0,behavior:'smooth'});
+if(id==='history')renderHistory();
+if(id==='projects')renderProjects();
+if(id==='home')updateDashboard();
+}
+document.querySelector('nav button[data-page="home"]').classList.add('active');
+
+
+function buildPlan(){
+const capital=Number(document.getElementById('planCapital').value);
+const purchase=Number(document.getElementById('planPurchase').value);
+const sale=Number(document.getElementById('planSale').value);
+const expenses=Number(document.getElementById('planExpenses').value);
+const target=Number(document.getElementById('planTarget').value);
+const days=Number(document.getElementById('planDays').value);
+
+if(![capital,purchase,sale,expenses,target,days].every(Number.isFinite)||capital<=0||purchase<=0||sale<=0||expenses<0||target<=0||days<=0){
+msg('planMsg','Vérifie les valeurs saisies.','error'); return;
+}
+const unitProfit=sale-purchase;
+if(unitProfit<=0){
+msg('planMsg','Impossible : le prix de vente doit être supérieur au prix d’achat.','error');
+document.getElementById('planResults').style.display='none'; return;
+}
+const units=Math.floor(capital/purchase);
+const used=units*purchase;
+const dailyTarget=target/days;
+const salesDay=Math.ceil((dailyTarget+expenses)/unitProfit);
+const salesMonth=salesDay*days;
+const revenue=salesMonth*sale;
+
+document.getElementById('pUnits').textContent=units;
+document.getElementById('pCapitalUsed').textContent=formatFCFA(used);
+document.getElementById('pUnitProfit').textContent=formatFCFA(unitProfit);
+document.getElementById('pSalesDay').textContent=salesDay;
+document.getElementById('pSalesMonth').textContent=salesMonth;
+document.getElementById('pRevenue').textContent=formatFCFA(revenue);
+
+const affordable=units>=salesDay;
+let text='';
+if(affordable){
+text='<p>Avec <strong>'+formatFCFA(capital)+'</strong>, ton capital permet d’acheter environ <strong>'+units+' unité(s)</strong> au prix indiqué.</p>';
+text+='<p>Pour viser <strong>'+formatFCFA(target)+'</strong> de bénéfice par mois, il faudrait vendre environ <strong>'+salesDay+' unité(s) par jour</strong>.</p>';
+text+='<p>Ton premier test peut donc commencer avec un petit stock, puis tu peux réinvestir une partie des bénéfices si les ventes sont réellement au rendez-vous.</p>';
+}else{
+text='<p>Ton capital permet d’acheter environ <strong>'+units+' unité(s)</strong>, mais le rythme nécessaire pour atteindre ton objectif est d’environ <strong>'+salesDay+' vente(s) par jour</strong>.</p>';
+text+='<p>Ton objectif est donc ambitieux avec ce capital de départ. Tu peux soit réduire l’objectif, soit chercher un produit avec une marge plus élevée, soit réinvestir progressivement.</p>';
+}
+document.getElementById('planText').innerHTML=text;
+document.getElementById('planResults').style.display='block';
+msg('planMsg','Plan généré à partir de tes paramètres.','success');
+
+localStorage.setItem('businessCILastPlan',JSON.stringify({capital,purchase,sale,expenses,target,days,units,salesDay}));
+}
+
+function sendPlanToCalculator(){
+const p=JSON.parse(localStorage.getItem('businessCILastPlan')||'null');
+if(!p){showPage('plan');return}
+document.getElementById('capital').value=p.capital;
+document.getElementById('purchase').value=p.purchase;
+document.getElementById('sale').value=p.sale;
+document.getElementById('expenses').value=p.expenses;
+document.getElementById('quantity').value=Math.max(1,p.units);
+document.getElementById('salesDay').value=Math.max(1,p.salesDay);
+showPage('calculator');
+msg('calcMsg','Ton scénario a été transféré dans le calculateur.','info');
+}
+
+
+function getProjects(){
+try{return JSON.parse(localStorage.getItem('businessCIProjects')||'[]')}catch(e){return[]}
+}
+
+function saveProject(){
+const name=document.getElementById('projectName').value.trim();
+const capital=Number(document.getElementById('projectCapital').value);
+const purchase=Number(document.getElementById('projectPurchase').value);
+const sale=Number(document.getElementById('projectSale').value);
+const quantity=Number(document.getElementById('projectQuantity').value);
+const salesDay=Number(document.getElementById('projectSalesDay').value);
+const expenses=Number(document.getElementById('projectExpenses').value);
+
+if(!name){msg('projectMsg','Donne un nom à ton projet.','error');return}
+if(![capital,purchase,sale,quantity,salesDay,expenses].every(Number.isFinite)||capital<0||purchase<=0||sale<=0||quantity<=0||salesDay<=0||expenses<0){
+msg('projectMsg','Vérifie les valeurs saisies.','error');return;
+}
+
+const unit=sale-purchase;
+const daily=unit*salesDay-expenses;
+const monthly=daily*30;
+let projects=getProjects();
+projects.unshift({
+id:Date.now(),name,capital,purchase,sale,quantity,salesDay,expenses,
+daily,monthly,createdAt:new Date().toLocaleDateString('fr-FR')
+});
+localStorage.setItem('businessCIProjects',JSON.stringify(projects.slice(0,30)));
+msg('projectMsg','Projet enregistré.','success');
+renderProjects();
+}
+
+function renderProjects(){
+const projects=getProjects(),el=document.getElementById('projectsList');
+if(!projects.length){
+el.innerHTML='<div class="card empty">Aucun projet enregistré. Crée ton premier projet ci-dessus.</div>';
+return;
+}
+el.innerHTML='<div class="card"><h2>📂 Projets enregistrés</h2>'+
+projects.map(p=>`
+<div class="idea">
+<h3>${escapeHTML(p.name)}</h3>
+<div class="meta">Créé le ${p.createdAt}</div>
+<div class="results">
+<div class="result"><span>Capital</span><strong>${formatFCFA(p.capital)}</strong></div>
+<div class="result"><span>Bénéfice / jour</span><strong>${formatFCFA(p.daily)}</strong></div>
+<div class="result"><span>Bénéfice / mois</span><strong>${formatFCFA(p.monthly)}</strong></div>
+<div class="result"><span>Marge</span><strong>${p.sale>0?((p.sale-p.purchase)/p.sale*100).toFixed(1):0} %</strong></div>
+</div>
+<div class="quick" style="margin-top:10px">
+<button class="small dark" onclick="openProject(${p.id})">🧮 OUVRIR</button>
+<button class="small danger" onclick="deleteProject(${p.id})">🗑️ SUPPRIMER</button>
+</div>
+</div>`).join('')+'</div>';
+}
+
+function escapeHTML(value){
+return String(value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]});
+}
+
+function openProject(id){
+const p=getProjects().find(x=>x.id===id);
+if(!p)return;
+document.getElementById('capital').value=p.capital;
+document.getElementById('purchase').value=p.purchase;
+document.getElementById('sale').value=p.sale;
+document.getElementById('quantity').value=p.quantity;
+document.getElementById('salesDay').value=p.salesDay;
+document.getElementById('expenses').value=p.expenses;
+showPage('calculator');
+msg('calcMsg','Projet « '+p.name+' » ouvert dans le calculateur.','info');
+}
+
+function deleteProject(id){
+if(!confirm('Supprimer ce projet ?'))return;
+const projects=getProjects().filter(p=>p.id!==id);
+localStorage.setItem('businessCIProjects',JSON.stringify(projects));
+renderProjects();
+}
+
+function calculate(){
+const capital=Number(document.getElementById('capital').value),purchase=Number(document.getElementById('purchase').value),sale=Number(document.getElementById('sale').value),quantity=Number(document.getElementById('quantity').value),salesDay=Number(document.getElementById('salesDay').value),expenses=Number(document.getElementById('expenses').value);
+const vals=[capital,purchase,sale,quantity,salesDay,expenses];
+if(vals.some(v=>!Number.isFinite(v))||vals.some(v=>v<0)||quantity<=0||salesDay<=0){msg('calcMsg','Vérifie les valeurs saisies.','error');return}
+if(sale<=purchase)msg('calcMsg','Attention : le prix de vente doit être supérieur au prix d’achat.','warning');else msg('calcMsg','Calcul effectué.','success');
+const invested=purchase*quantity,revenue=sale*salesDay,unit=sale-purchase,daily=unit*salesDay-expenses,weekly=daily*7,monthly=daily*30,margin=sale>0?unit/sale*100:0,be=daily>0?invested/daily:null;
+['rInvested','rRevenue','rUnitProfit','rDaily','rWeekly','rMonthly'].forEach((id,i)=>document.getElementById(id).textContent=formatFCFA([invested,revenue,unit,daily,weekly,monthly][i]));
+document.getElementById('rMargin').textContent=margin.toFixed(1)+' %';
+document.getElementById('rBreakEven').textContent=be?be.toFixed(1)+' jour(s)':'Impossible';
+document.getElementById('results').style.display='grid';
+saveHistory({date:new Date().toLocaleString('fr-FR'),purchase,sale,quantity,salesDay,expenses,daily,monthly,margin});
+}
+
+function renderIdeas(){
+const q=document.getElementById('ideaSearch').value.toLowerCase().trim();
+const fav=getFavorites();
+const filtered=ideas.filter(i=>!q||i.name.toLowerCase().includes(q)||i.desc.toLowerCase().includes(q));
+const list=document.getElementById('ideasList');
+if(!filtered.length){
+list.innerHTML='<div class="empty">Aucune idée trouvée.</div>';
+}else{
+list.innerHTML=filtered.map(i=>`
+<div class="idea">
+<button class="favorite" title="Favori" onclick="toggleFavorite(${i.id})">${fav.includes(i.id)?'★':'☆'}</button>
+<h3>${i.name}</h3>
+<div class="meta">
+<span class="badge">À partir de ${i.capital.toLocaleString('fr-FR')} FCFA</span>
+<span class="badge">${i.level}</span>
+</div>
+<p>${i.desc}</p>
+<button class="small dark" onclick="useIdea(${i.id})">🧮 TESTER DANS LE CALCULATEUR</button>
+</div>`).join('');
+}
+updateHomeFavorites();
+}
+
+function useIdea(id){showPage('calculator');document.getElementById('capital').value=ideas.find(i=>i.id===id).capital;msg('calcMsg','Simulation ouverte pour « '+ideas.find(i=>i.id===id).name+' ». Adapte les prix avec tes coûts réels.','info')}
+function getFavorites(){try{return JSON.parse(localStorage.getItem('businessCIFavorites')||'[]')}catch(e){return[]}}
+function toggleFavorite(id){let f=getFavorites();f=f.includes(id)?f.filter(x=>x!==id):[...f,id];localStorage.setItem('businessCIFavorites',JSON.stringify(f));renderIdeas()}
+function updateHomeFavorites(){
+const f=getFavorites(),el=document.getElementById('homeFavorites');
+if(!f.length){el.textContent='Aucun favori pour le moment.';return}
+el.innerHTML=f.map(id=>{const i=ideas.find(x=>x.id===id);return i?`<div class="idea"><b>${i.name}</b><br><small>Capital indicatif : ${i.capital.toLocaleString('fr-FR')} FCFA+</small></div>`:''}).join('');
+}
+
+function calculateGoal(){
+const goal=Number(document.getElementById('monthlyGoal').value),days=Number(document.getElementById('goalDays').value),purchase=Number(document.getElementById('objPurchase').value),sale=Number(document.getElementById('objSale').value),expenses=Number(document.getElementById('objExpenses').value);
+if(![goal,days,purchase,sale,expenses].every(Number.isFinite)||goal<=0||days<=0||purchase<0||sale<0||expenses<0){msg('goalMsg','Vérifie les valeurs saisies.','error');return}
+const unit=sale-purchase;
+if(unit<=0){msg('goalMsg','Impossible : le prix de vente doit être supérieur au prix d’achat.','error');return}
+const dailyGoal=goal/days,sales=Math.ceil((dailyGoal+expenses)/unit),monthSales=sales*days,revenue=monthSales*sale;
+document.getElementById('gDaily').textContent=formatFCFA(dailyGoal);
+document.getElementById('gSales').textContent=sales+' vente(s)';
+document.getElementById('gMonthSales').textContent=monthSales+' vente(s)';
+document.getElementById('gRevenue').textContent=formatFCFA(revenue);
+document.getElementById('goalResults').style.display='grid';
+msg('goalMsg','Plan calculé à partir de tes paramètres.','success');
+localStorage.setItem('businessCIGoal',JSON.stringify({daily:dailyGoal,monthly:goal}));
+updateDashboard();
+}
+
+function updateDashboard(){
+const g=JSON.parse(localStorage.getItem('businessCIGoal')||'null');
+if(!g){document.getElementById('dashDaily').textContent='0 FCFA';document.getElementById('dashMonthly').textContent='0 FCFA';document.getElementById('progressBar').style.width='0%';document.getElementById('progressText').textContent='Définis ton objectif pour commencer.';return}
+document.getElementById('dashDaily').textContent=formatFCFA(g.daily);document.getElementById('dashMonthly').textContent=formatFCFA(g.monthly);
+const h=getHistory(),recent=h.length?h[0].daily:0,percent=Math.max(0,Math.min(100,recent/g.daily*100));
+document.getElementById('progressBar').style.width=percent+'%';
+document.getElementById('progressText').textContent=recent?('Dernier calcul : '+formatFCFA(recent)+' / jour, soit '+percent.toFixed(0)+'% de ton objectif.'):'Fais un calcul pour voir ta progression.';
+}
+
+function getHistory(){try{return JSON.parse(localStorage.getItem('businessCIHistory')||'[]')}catch(e){return[]}}
+function saveHistory(item){let h=getHistory();h.unshift(item);localStorage.setItem('businessCIHistory',JSON.stringify(h.slice(0,30)));updateDashboard()}
+function renderHistory(){
+const h=getHistory(),el=document.getElementById('historyList');
+if(!h.length){el.innerHTML='<div class="card empty">Aucun calcul enregistré pour le moment.</div>';return}
+el.innerHTML='<div class="card">'+h.map(x=>`<div class="history-item"><strong>${formatFCFA(x.daily)} / jour</strong><small>${x.date}</small><div>Achat : ${formatFCFA(x.purchase)} — Vente : ${formatFCFA(x.sale)}</div><div>Ventes/jour : ${x.salesDay} — Marge : ${x.margin.toFixed(1)} %</div><div>Mensuel estimé : ${formatFCFA(x.monthly)}</div></div>`).join('')+'</div>';
+}
+function clearHistory(){if(confirm('Effacer tout l’historique ?')){localStorage.removeItem('businessCIHistory');renderHistory();updateDashboard()}}
+renderIdeas();updateDashboard();
+</script>
+</body>
+</html>
